@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+  <script src="d3.v3.js"></script>
+  <script>
+
+   data = ['world', 'everybody', 'and goodbye all at once'];
+
+   var svg = d3.select("body").append("svg")
+               .attr("width", 960)
+               .attr("height", 500);
+
+   var dsel = svg.selectAll("g").data(data);
+
+   var gsel = dsel
+                  .enter()
+                  .append("g")
+                  .attr("transform", function(d, i) {
+                      return "rotate(" + (i+1)*5 + ")";
+                  });
+
+ 
+   gsel
+       .append("rect")
+       .style("fill", "#fcc")
+       .style("stroke", "#666")
+       .style("stroke-width", "1.5px");
+
+   gsel
+       .append("text")
+       .attr("x", 10)
+       .attr("y", function(d, i) {
+           return 100 * i + 60;
+       })
+       .attr("fill", "blue")
+       .style("font", "300 60px Helvetica Neue")
+       .text(function(d) {
+           return "Hello, " + d + "!";
+       });
+
+   gsel
+       .select("text")
+       .each(function() {
+           var bbox = this.getBBox();
+           var rect = d3.select(this.parentNode).select("rect");
+           rect
+               .attr("x", bbox.x)
+               .attr("y", bbox.y)
+               .attr("width", bbox.width)
+               .attr("height", bbox.height);
+       });
+
+  </script>

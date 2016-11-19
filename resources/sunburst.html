@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+ body {
+     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+     margin: auto;
+     position: relative;
+     width: 960px;
+ }
+
+ form {
+     position: absolute;
+     right: 10px;
+     top: 10px;
+ }
+
+ .directory-path {
+     font-family: monospace;
+     height: 3ex;
+     word-break: break-all;
+ }
+
+</style>
+<body>
+</body>
+<script src="d3.v3.js"></script>
+<script>
+
+ var width = 960,
+     height = 700,
+     radius = Math.min(width, height) / 2.2,
+     color = d3.scale.category20();
+
+ color.range(color.range().map(function(oc) {
+     var c = d3.hsl(oc);
+     c.l = Math.max(c.l, 0.5);
+     return c.darker(1);
+ }));
+
+ function arcColor(d) {
+     return color((d.children ? d : d.parent).name);
+ }
+
+ function arcBrightColor(d) {
+     var c = d3.hsl(arcColor(d));
+     c.s = 0.8;
+     c.l = 0.8;
+     return c;
+ }
+
+ var svg, agroup, tgroup;
+
+ var partition = d3.layout.partition()
+                   .sort(null)
+                   .size([2 * Math.PI, radius * radius])
+                   .value(function(d) { return d.size; });
+
+ var arc = d3.svg.arc()
+             .startAngle(function(d) { return d.x; })
+             .endAngle(function(d) { return d.x + d.dx; })
+             .innerRadius(function(d) { return Math.sqrt(d.y) })
+             .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
+
+ d3.json("../output/lz96_b.json", function(error, root) {
+     if (error) throw error;
+     updateData(root);
+ });
+
+ var directoryPath = d3.select("body").append("p").attr("class", "directory-path");
+
+ function updateData(data) {
+     d3.select('svg').remove();
+     svg = d3.select("body").append("svg")
+             .attr("width", width)
+             .attr("height", height)
+             .append("g")
+             .attr("transform", "translate(" + width / 2 + "," + height * .5 + ")");
+     agroup = svg.append("g");
+     tgroup = svg.append("g");
+     renderData(data);
+ }
+
+ function renderData(data) {
+     var asel = agroup.datum(data).selectAll("path")
+                      .data(partition.nodes);
+     asel
+         .enter()
+         .append("path")
+         .attr("d", arc)
+         .style("stroke-width", function(d) {
+             return 3/(d.depth - data.depth);
+         })
+         .style("fill-rule", "evenodd")
+         .on("click", function(d) {
+             if (d === data && d.parent !== undefined) {
+                 updateData(d.parent);
+             } else {
+                 updateData(d);
+             }
+             d3.event.stopPropagation();
+         })
+         .on("mouseover", function(d) {
+             lin_d = lineage(d);
+             for (var n of lin_d) {
+                 n.highlighted = true;
+             }
+             paths = lin_d.reverse().map(function(n) { return n.name });
+             directoryPath.text(paths.join("/"));
+             renderData(data);
+         })
+         .on("mouseout", function(d) {
+             for (var n of lineage(d)) {
+                 n.highlighted = false;
+             }
+             directoryPath.text(null);
+             renderData(data);
+         });
+
+     var tsel = tgroup.datum(data).selectAll("g")
+                      .data(partition.nodes);
+     var tsgroup = tsel.enter().append("g");
+
+     tsgroup
+         .style("pointer-events", "none")
+         .attr("transform", function(d) {
+             var a = rad2deg(d.x + d.dx / 2) - 90;
+             var r = Math.sqrt(d.y + d.dy / 2);
+             if (d === data) {
+                 a = 0;
+                 r = 0;
+             } else if (Math.abs(d.dx - 2 * Math.PI) < 1e-5) {
+                 // Only one node at this level, default angle is 90 (straight
+                 // down) which looks bad.
+                 a = 0;
+             }
+             var a2 = a < 90 || a > 270 ? 0 : 180;
+             return "rotate(" + a + ") translate(" + r + ") rotate(" + a2 + ")";
+         });
+
+     tsgroup
+         .append("rect")
+         .attr("rx", 2)
+         .attr("ry", 2)
+         .attr("fill", "#eee");
+
+     tsgroup
+         .append("path")
+         .attr("d", "M -5 0 H 5 L 0 10 Z")
+         .style("fill", "#eee");
+
+     tsgroup
+         .append("text")
+         .style("text-anchor", "middle")
+         .style("font-size", "12px")
+         .style("background", "#eee")
+         .text(function(d) { return d.name + ' - ' + d.value; });
+
+     tsgroup
+         .select("text")
+         .each(function() {
+             var bbox = this.getBBox();
+             var rect = d3.select(this.parentNode).select("rect");
+             rect
+                 .attr("x", bbox.x - 3)
+                 .attr("y", bbox.y)
+                 .attr("width", bbox.width + 6)
+                 .attr("height", bbox.height);
+         });
+
+     asel
+         .style("stroke", function(d) {
+             return d.highlighted ? "#333" : "#eee";
+         })
+         .style("fill", function(d) {
+             return d.highlighted ? arcBrightColor(d) : arcColor(d);
+         });
+
+     tsel
+        .style("display", function(d) {
+            return d.highlighted ? null : 'none';
+        });
+
+     asel.exit().remove();
+     tsel.exit().remove();
+
+     d3.select('html').on("click", function() {
+         var d = data;
+         while (d.parent !== undefined) {
+             d = d.parent;
+         }
+         updateData(d);
+     });
+ }
+
+ function lineage(d) {
+     var nodes = [d];
+     while (d.parent !== undefined) {
+         nodes.push(d.parent);
+         d = d.parent;
+     }
+     return nodes;
+ }
+
+ function rad2deg(a) {
+     return a * 180 / Math.PI;
+ }
+
+ d3.select(self.frameElement).style("height", height + "px");
+
+</script>
