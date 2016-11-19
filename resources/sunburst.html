@@ -174,7 +174,9 @@
      tsgroup
          .append("text")
          .attr('class', 'tooltip-label')
-         .text(function(d) { return d.name + ' - ' + d.value; });
+         .text(function(d) {
+             return d.name + ' - ' + formatBytes(d.value);
+         });
 
      tsgroup
          .select("text")
@@ -234,6 +236,12 @@
 
  function rad2deg(a) {
      return a * 180 / Math.PI;
+ }
+
+ var formatSI = d3.format('.3s');
+
+ function formatBytes(b) {
+     return formatSI(b) + 'B';
  }
 
  d3.select(self.frameElement).style("height", height + "px");
