@@ -16,9 +16,18 @@
  }
 
  .directory-path {
-     font-family: monospace;
      height: 3ex;
      word-break: break-all;
+ }
+
+ .tooltip-shadow {
+     fill: #000;
+     opacity: 0.7;
+ }
+
+ .tooltip-label {
+     text-anchor: middle;
+     font-size: 12px;
  }
 
 </style>
@@ -77,7 +86,7 @@
              .append("g")
              .attr("transform", "translate(" + width / 2 + "," + height * .5 + ")");
      agroup = svg.append("g");
-     tgroup = svg.append("g");
+     tgroup = svg.append("g").style("pointer-events", "none");
      renderData(data);
  }
 
@@ -91,7 +100,6 @@
          .style("stroke-width", function(d) {
              return 3/(d.depth - data.depth);
          })
-         .style("fill-rule", "evenodd")
          .on("click", function(d) {
              if (d === data && d.parent !== undefined) {
                  updateData(d.parent);
@@ -102,9 +110,10 @@
          })
          .on("mouseover", function(d) {
              lin_d = lineage(d);
-             for (var n of lin_d) {
+             for (var [i, n] of lin_d.entries()) {
                  n.highlighted = true;
-             }
+                 n.h_height = i;
+             };
              paths = lin_d.reverse().map(function(n) { return n.name });
              directoryPath.text(paths.join("/"));
              renderData(data);
@@ -119,52 +128,68 @@
 
      var tsel = tgroup.datum(data).selectAll("g")
                       .data(partition.nodes);
+
      var tsgroup = tsel.enter().append("g");
 
      tsgroup
-         .style("pointer-events", "none")
          .attr("transform", function(d) {
-             var a = rad2deg(d.x + d.dx / 2) - 90;
-             var r = Math.sqrt(d.y + d.dy / 2);
+             var a1 = rad2deg(d.x + d.dx / 2) - 90;
+             var x = Math.sqrt(d.y + d.dy / 2);
              if (d === data) {
-                 a = 0;
-                 r = 0;
-             } else if (Math.abs(d.dx - 2 * Math.PI) < 1e-5) {
-                 // Only one node at this level, default angle is 90 (straight
-                 // down) which looks bad.
-                 a = 0;
+                 x = 0;
              }
-             var a2 = a < 90 || a > 270 ? 0 : 180;
-             return "rotate(" + a + ") translate(" + r + ") rotate(" + a2 + ")";
+             /* The starting angle of a 360-degree arc is at 90 degrees,
+                putting the midpoint (and thus our tooltip) at 180. Override
+                the angle to 0 for these arcs for better readability. */
+             if (Math.abs(d.dx - 2 * Math.PI) < 1e-5) {
+                 a1 = 0;
+             }
+             var y = -10, a2 = 0;
+             /* For tooltips to the left of the origin, we rotate them by 180
+                after the initial rotation and translation to keep them right
+                side up. We also need to reverse the vertical translation as
+                now the tooltip is facing the other direction. */
+             if (a1 > 90 && a1 < 270) {
+                 y = -y;
+                 a2 = 180;
+             }
+             return `rotate(${a1}) translate(${x} ${y}) rotate(${a2})`;
          });
 
      tsgroup
-         .append("rect")
-         .attr("rx", 2)
-         .attr("ry", 2)
-         .attr("fill", "#eee");
+         .append('rect')
+         .attr('class', 'tooltip-shadow')
+         .attr('rx', 2).attr('ry', 2);
 
      tsgroup
-         .append("path")
-         .attr("d", "M -5 0 H 5 L 0 10 Z")
-         .style("fill", "#eee");
+         .append('path')
+         .attr('class', 'tooltip-shape')
+         .attr('d', 'M -5 0 H 5 L 0 10 Z');
+
+     tsgroup
+         .append('rect')
+         .attr('class', 'tooltip-shape')
+         .attr('rx', 2).attr('ry', 2);
 
      tsgroup
          .append("text")
-         .style("text-anchor", "middle")
-         .style("font-size", "12px")
-         .style("background", "#eee")
+         .attr('class', 'tooltip-label')
          .text(function(d) { return d.name + ' - ' + d.value; });
 
      tsgroup
          .select("text")
          .each(function() {
              var bbox = this.getBBox();
-             var rect = d3.select(this.parentNode).select("rect");
-             rect
+             var psel = d3.select(this.parentNode);
+             psel.selectAll("rect.tooltip-shape")
                  .attr("x", bbox.x - 3)
                  .attr("y", bbox.y)
                  .attr("width", bbox.width + 6)
+                 .attr("height", bbox.height);
+             psel.selectAll("rect.tooltip-shadow")
+                 .attr("x", bbox.x - 5)
+                 .attr("y", bbox.y + 2)
+                 .attr("width", bbox.width + 10)
                  .attr("height", bbox.height);
          });
 
@@ -179,6 +204,11 @@
      tsel
         .style("display", function(d) {
             return d.highlighted ? null : 'none';
+        })
+        .selectAll(".tooltip-shape")
+        .style("fill", function(d) {
+            var c = d3.hsl('white').darker(d.h_height * 0.25);
+            return d.h_height === undefined ? null : c;
         });
 
      asel.exit().remove();
