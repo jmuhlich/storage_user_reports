@@ -1,0 +1,42 @@
+{
+  "name": "storage-report-viewer",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Storage Report Viewer",
+  "main": "webpack.config.js",
+  "scripts": {
+    "start": "webpack-dev-server --progress --colors --inline --content-base dist/  --hot",
+    "lint": "eslint client common; true",
+    "test": "NODE_ENV=test mocha --compilers js:babel-core/register --recursive; true"
+  },
+  "author": "Jeremy L. Muhlich",
+  "contributors": [],
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.8",
+    "babel-plugin-transform-class-properties": "^6.19.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-react-hmre": "^1.1.1",
+    "babel-preset-stage-0": "^6.16.0",
+    "css-loader": "^0.26.0",
+    "d3": "^3.5.17",
+    "file-loader": "^0.9.0",
+    "html-webpack-plugin": "^2.24.1",
+    "imports-loader": "^0.6.5",
+    "json-loader": "^0.5.4",
+    "node-sass": "^3.13.0",
+    "react": "^15.4.0",
+    "react-addons-perf": "^15.4.0",
+    "react-dom": "^15.4.0",
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "dependencies": {}
+}
