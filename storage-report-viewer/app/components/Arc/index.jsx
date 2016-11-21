@@ -23,6 +23,7 @@ class Arc extends React.Component {
   static propTypes = {
     node: React.PropTypes.object,
     baseDepth: React.PropTypes.number,
+    highlighted: React.PropTypes.bool,
     updateFocusNode: React.PropTypes.func
   };
 
@@ -35,7 +36,7 @@ class Arc extends React.Component {
   arcColor() {
     const d = this.props.node;
     const c = d3.hsl(color((d.children ? d : d.parent).name));
-    if (d.highlighted) {
+    if (this.props.highlighted) {
       c.s = 0.8;
       c.l = 0.8;
     }
@@ -52,27 +53,29 @@ class Arc extends React.Component {
 
   render() {
 
-    const { node, baseDepth } = this.props;
+    const { node, baseDepth, highlighted } = this.props;
     const d = node;
 
     return (
-      <path
-        d={ arc(d) }
-        style={{
-               fill: this.arcColor(),
-               stroke: d.highlighted ? "#333" : "#eee",
-               strokeWidth: 3 / (d.depth - baseDepth)
-               }}
-        onMouseOver={ this.handleMouseOver }
-        onMouseOut={ this.handleMouseOut }
-        />
+      d.dx > .01 ?
+      ( <path
+            d={ arc(d) }
+            style={{
+              fill: this.arcColor(),
+              stroke: highlighted ? "#333" : "#eee",
+              strokeWidth: 3 / (d.depth - baseDepth)
+            }}
+            onMouseOver={ this.handleMouseOver }
+            onMouseOut={ this.handleMouseOut }
+        /> )
+      : null
     );
 
   }
 
-  /* shouldComponentUpdate(nextProps, nextState) {
-     return this.props.node.highlighted != nextProps.node.highlighted;
-     } */
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.highlighted != nextProps.highlighted;
+  }
 
 }
 

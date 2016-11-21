@@ -5,7 +5,7 @@ import App from './components/App';
 
 import './assets/base.scss';
 
-import data from './assets/flare.json';
+import data from './assets/lz96_p07.json';
 
 // add in performance tooling in dev
 if (process.env.NODE_ENV !== 'production') {

@@ -6,6 +6,7 @@ class Arcs extends React.Component {
 
   static propTypes = {
     nodes: React.PropTypes.array,
+    highlightedNodes: React.PropTypes.array,
     updateFocusNode: React.PropTypes.func
   };
 
@@ -17,13 +18,14 @@ class Arcs extends React.Component {
 
   render() {
 
-    const { nodes, updateFocusNode } = this.props;
+    const { nodes, highlightedNodes, updateFocusNode } = this.props;
 
     return (
       <g>
         { nodes.map((d, i) =>
-          <Arc node={d} baseDepth={nodes[0].depth}
-          updateFocusNode={updateFocusNode} key={i} />) }
+          <Arc key={i} node={d} baseDepth={nodes[0].depth}
+               highlighted={highlightedNodes.includes(d)}
+               updateFocusNode={updateFocusNode} />) }
       </g>
     );
 
