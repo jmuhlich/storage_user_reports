@@ -1,22 +1,12 @@
 import React from 'react';
 
-const arc = d3.svg.arc()
-              .startAngle(function(d) { return d.x; })
-              .endAngle(function(d) { return d.x + d.dx; })
-              .innerRadius(function(d) { return Math.sqrt(d.y) })
-              .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
-
-const color = d3.scale.category20();
-color.range(color.range().map(function(oc) {
-  var c = d3.hsl(oc);
-  c.l = Math.max(c.l, 0.5);
-  return c.darker(1);
-}));
+import Arc from '../Arc';
 
 class Arcs extends React.Component {
 
   static propTypes = {
-    nodes: React.PropTypes.array
+    nodes: React.PropTypes.array,
+    updateFocusNode: React.PropTypes.func
   };
 
   static defaultProps = {};
@@ -25,25 +15,15 @@ class Arcs extends React.Component {
     super(props);
   }
 
-  arcColor(d) {
-    return color((d.children ? d : d.parent).name);
-  }
-
-
   render() {
 
-    const { nodes } = this.props;
-    const data = nodes[0]; // holdover from d3 code
+    const { nodes, updateFocusNode } = this.props;
 
     return (
       <g>
         { nodes.map((d, i) =>
-          <path key={i} d={arc(d)}
-          style={{
-            fill: this.arcColor(d),
-            stroke: d.highlighted ? "#333" : "#eee",
-            'stroke-width': 3 / (d.depth - data.depth)
-          }} />) }
+          <Arc node={d} baseDepth={nodes[0].depth}
+          updateFocusNode={updateFocusNode} key={i} />) }
       </g>
     );
 
