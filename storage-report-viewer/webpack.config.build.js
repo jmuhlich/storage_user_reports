@@ -12,11 +12,19 @@ module.exports = [
       new HtmlPlugin({
         template: './app/index.html',
         filename: 'index.html'
+      }),
+      new webpack.DefinePlugin({
+        'process.env':{
+          'NODE_ENV': JSON.stringify('production')
+        },
+      }),
+      new webpack.optimize.UglifyJsPlugin({
+        include: /\.min\.js$/,
+        minimize: true
       })
     ],
-    devtool: 'eval-cheap-module-source-map',
     entry: {
-      'bundle': [
+      'bundle.min': [
         'babel-polyfill',
         './app/index.jsx'
       ]
