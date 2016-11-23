@@ -59,7 +59,7 @@ class Sunburst extends React.Component {
         <g transform={this.centeringTransform}>
           <Arcs nodes={nodes} highlightedNodes={highlightedNodes}
                 updateFocusNode={updateFocusNode} />
-          {/* <Tooltips nodes={nodes} /> */}
+          <Tooltips highlightedNodes={highlightedNodes} />
         </g>
       </svg>
     );
