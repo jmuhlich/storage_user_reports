@@ -20,14 +20,16 @@ class Arcs extends React.Component {
 
     const { nodes, highlightedNodes, updateFocusNode } = this.props;
 
-    return (
-      <g>
-        { nodes.map((d, i) =>
-          <Arc key={i} node={d} baseDepth={nodes[0].depth}
-               highlighted={highlightedNodes.includes(d)}
-               updateFocusNode={updateFocusNode} />) }
-      </g>
+    const arcList = nodes.map(
+      (d, i) =>
+        d.dx > .01 ?
+              <Arc key={i} node={d} baseDepth={nodes[0].depth}
+                   highlighted={highlightedNodes.includes(d)}
+                   updateFocusNode={updateFocusNode} />
+            : null
     );
+
+    return (<g>{ arcList }</g>);
 
   }
 

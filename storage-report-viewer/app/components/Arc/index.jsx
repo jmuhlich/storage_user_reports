@@ -57,18 +57,16 @@ class Arc extends React.Component {
     const d = node;
 
     return (
-      d.dx > .01 ?
-      ( <path
-            d={ arc(d) }
-            style={{
-              fill: this.arcColor(),
-              stroke: highlighted ? "#333" : "#eee",
-              strokeWidth: 3 / (d.depth - baseDepth)
-            }}
-            onMouseOver={ this.handleMouseOver }
-            onMouseOut={ this.handleMouseOut }
-        /> )
-      : null
+      <path
+          d={ arc(d) }
+          style={{
+            fill: this.arcColor(),
+            stroke: highlighted ? "#333" : "#eee",
+            strokeWidth: 3 / (d.depth - baseDepth)
+          }}
+          onMouseOver={ this.handleMouseOver }
+          onMouseOut={ this.handleMouseOut }
+      />
     );
 
   }
