@@ -1,16 +1,8 @@
 import React from 'react';
 
+import { rad2deg, formatBytes, white } from '../../util';
 import BoundingBoxAware from '../BoundingBoxAware';
 import './tooltip.scss';
-
-
-function rad2deg(a) {
-  return a * 180 / Math.PI;
-}
-
-const formatSI = d3.format('.3s');
-
-const white = d3.hsl('white');
 
 
 /* The original D3 implementation used "d" as the callback datum parameter name.
@@ -57,8 +49,8 @@ class Tooltip extends BoundingBoxAware {
     return `rotate(${a1}) translate(${x} ${y}) rotate(${a2})`;
   }
 
-  formatBytes() {
-    return formatSI(this.props.node.value) + 'B';
+  formatNodeSize() {
+    return formatBytes(this.props.node.value);
   }
 
   shapeFill() {
@@ -95,7 +87,7 @@ class Tooltip extends BoundingBoxAware {
         </g>
         <text className="tooltip-label"
               ref={ text => { this.boundingBoxTarget=text } }>
-          { d.name + ' - ' + this.formatBytes() }
+          { d.name + ' - ' + this.formatNodeSize() }
         </text>
       </g>
     );

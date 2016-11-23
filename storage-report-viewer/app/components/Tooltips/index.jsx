@@ -5,7 +5,7 @@ import Tooltip from '../Tooltip';
 class Tooltips extends React.Component {
 
   static propTypes = {
-    highlightedNodes: React.PropTypes.array,
+    nodes: React.PropTypes.array,
   };
 
   static defaultProps = {};
@@ -16,9 +16,8 @@ class Tooltips extends React.Component {
 
   render() {
 
-    const { highlightedNodes } = this.props;
+    const { nodes } = this.props;
 
-    const nodes = highlightedNodes.slice().sort((a,b) => a.depth-b.depth);
     const maxDepth = nodes.length ? nodes[nodes.length-1].depth : NaN;
 
     const tooltipList = nodes.map(

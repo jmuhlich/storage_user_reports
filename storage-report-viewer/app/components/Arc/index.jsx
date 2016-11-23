@@ -1,4 +1,5 @@
 import React from 'react';
+import * as d3 from 'd3';
 
 const arc = d3.svg.arc()
               .startAngle(function(d) { return d.x; })
@@ -24,7 +25,8 @@ class Arc extends React.Component {
     node: React.PropTypes.object,
     baseDepth: React.PropTypes.number,
     highlighted: React.PropTypes.bool,
-    updateFocusNode: React.PropTypes.func
+    updateFocusNode: React.PropTypes.func,
+    updateCenterNode: React.PropTypes.func
   };
 
   static defaultProps = {};
@@ -47,9 +49,9 @@ class Arc extends React.Component {
     this.props.updateFocusNode(this.props.node);
   };
 
-  handleMouseOut = (e) => {
-    this.props.updateFocusNode(undefined);
-  };
+  handleClick = (e) => {
+    this.props.updateCenterNode(this.props.node);
+  }
 
   render() {
 
@@ -65,7 +67,7 @@ class Arc extends React.Component {
             strokeWidth: 3 / (d.depth - baseDepth)
           }}
           onMouseOver={ this.handleMouseOver }
-          onMouseOut={ this.handleMouseOut }
+          onClick={ this.handleClick }
       />
     );
 
