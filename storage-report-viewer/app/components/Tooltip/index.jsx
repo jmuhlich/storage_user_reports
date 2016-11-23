@@ -73,38 +73,25 @@ class Tooltip extends BoundingBoxAware {
     const { bbox } = this.state;
     const d = node;
 
-    /*
-    psel.selectAll("rect.tooltip-shape")
-        .attr("x", bbox.x - 3)
-        .attr("y", bbox.y)
-        .attr("width", bbox.width + 6)
-        .attr("height", bbox.height);
-    psel.selectAll("rect.tooltip-shadow")
-        .attr("x", bbox.x - 5)
-        .attr("y", bbox.y + 2)
-        .attr("width", bbox.width + 10)
-        .attr("height", bbox.height);
-    */
-    const shapeRectStyle = bbox ? {
+    const shapeRectDims = {
       x: bbox.x - 3,
       y: bbox.y,
       width: bbox.width + 6,
       height: bbox.height
-    } : {};
-    const shadowRectStyle = bbox ? {
+    };
+    const shadowRectDims = {
       x: bbox.x - 5,
       y: bbox.y + 2,
       width: bbox.width + 10,
       height: bbox.height
-    } : {};
+    };
 
     return (
       <g transform={this.transform()}>
-        <rect className="tooltip-shadow" style={shadowRectStyle}
-              rx="2" ry="2" />
-        <g className="tooltip-shape" style={{fill: this.shapeFill()}}>
+        <rect className="tooltip-shadow" {...shadowRectDims} rx="2" ry="2" />
+        <g style={{fill: this.shapeFill()}}>
           <path d="M -5 0 H 5 L 0 10 Z" />
-          <rect style={shapeRectStyle} rx="2" ry="2" />
+          <rect {...shapeRectDims} rx="2" ry="2" />
         </g>
         <text className="tooltip-label"
               ref={ text => { this.boundingBoxTarget=text } }>

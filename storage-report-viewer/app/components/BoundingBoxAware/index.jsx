@@ -9,10 +9,10 @@ class BoundingBoxAware extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      bbox: {
-        left: null, top: null, right: null, bottom: null,
-        width: null, height: null
-      }
+      /* Nulls or NaNs might be more proper here, but zeros are fine for our
+      current use cases. Initializing to zeroes here reduce the code required
+      for bbox consumers. */
+      bbox: {x: 0, y: 0, width: 0, height: 0}
     };
   }
 
