@@ -5,7 +5,8 @@ import { formatBytes } from '../../util';
 class PathDetailRow extends React.Component {
 
   static propTypes = {
-    node: React.PropTypes.object.isRequired
+    node: React.PropTypes.object.isRequired,
+    depth: React.PropTypes.number.isRequired,
   };
 
   static defaultProps = {};
@@ -16,7 +17,7 @@ class PathDetailRow extends React.Component {
 
   render() {
 
-    const { node } = this.props;
+    const { node, depth } = this.props;
     const nameStyle = {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
@@ -25,7 +26,7 @@ class PathDetailRow extends React.Component {
 
     return (
       <tr>
-        <td>{ node.depth }</td>
+        <td>{ depth }</td>
         <td style={nameStyle}>{ node.name }</td>
         <td>{ formatBytes(node.value) }</td>
       </tr>

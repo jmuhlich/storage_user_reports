@@ -47,10 +47,12 @@ class Arc extends React.Component {
 
   handleMouseOver = (e) => {
     this.props.updateFocusNode(this.props.node);
+    e.stopPropagation();
   };
 
   handleClick = (e) => {
     this.props.updateCenterNode(this.props.node);
+    e.stopPropagation();
   }
 
   render() {

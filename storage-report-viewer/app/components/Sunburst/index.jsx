@@ -25,6 +25,14 @@ class Sunburst extends React.Component {
     this.centeringTransform = `translate(${width / 2} ${height / 2})`;
   }
 
+  handleClick = (e) => {
+    this.props.updateCenterNode(undefined);
+  }
+
+  handleMouseOver = (e) => {
+    this.props.updateFocusNode(undefined);
+  }
+
   render() {
 
     const { width, height, nodes, highlightedNodes,
@@ -32,7 +40,8 @@ class Sunburst extends React.Component {
       this.props;
 
     return (
-      <svg width={width} height={height}>
+      <svg width={width} height={height}
+        onClick={this.handleClick} onMouseOver={this.handleMouseOver}>
         <g transform={this.centeringTransform}>
           <Arcs nodes={nodes} highlightedNodes={highlightedNodes}
             updateFocusNode={updateFocusNode}

@@ -18,6 +18,10 @@ class PathDetails extends React.Component {
 
     const { nodes } = this.props;
 
+    const rowList = nodes.map(
+      (node, i) => <PathDetailRow key={i} node={node} depth={i} />
+    );
+
     return (
       <table style={{width: '100%', tableLayout: 'fixed'}}>
         <tbody>
@@ -26,7 +30,7 @@ class PathDetails extends React.Component {
             <th style={{textAlign: 'left'}}>Name</th>
             <th style={{textAlign: 'left', width: '4em'}}>Size</th>
           </tr>
-          { nodes.map((node, i) => <PathDetailRow key={i} node={node} />) }
+          { rowList }
         </tbody>
       </table>
     );
