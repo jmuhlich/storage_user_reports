@@ -2,7 +2,7 @@ import React from 'react';
 
 import { formatBytes } from '../../util';
 
-class PathDetailRow extends React.Component {
+class PathDetailRow extends React.PureComponent {
 
   static propTypes = {
     node: React.PropTypes.object.isRequired,

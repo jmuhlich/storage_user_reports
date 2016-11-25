@@ -2,7 +2,7 @@ import React from 'react';
 
 import Tooltip from '../Tooltip';
 
-class Tooltips extends React.Component {
+class Tooltips extends React.PureComponent {
 
   static propTypes = {
     nodes: React.PropTypes.array,

@@ -2,7 +2,7 @@ import React from 'react';
 
 import PathDetailRow from '../PathDetailRow';
 
-class PathDetails extends React.Component {
+class PathDetails extends React.PureComponent {
 
   static propTypes = {
     nodes: React.PropTypes.array.isRequired
