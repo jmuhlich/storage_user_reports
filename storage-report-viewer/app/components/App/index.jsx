@@ -59,20 +59,20 @@ class App extends React.Component {
     return nodes;
   }
 
-  updateFocusNode(node) {
+  updateFocusNode = (node) => {
     this.setState({
       highlightedNodes: node === undefined ? [] : this.getLineage(node)
     });
-  }
+  };
 
-  updateCenterNode(node) {
+  updateCenterNode = (node) => {
     if (node === undefined) {
       node = this.master_node;
     } else if (node === this.state.nodes[0] && node.parent !== undefined) {
       node = node.parent;
     }
     this.setState({nodes: this.partition.nodes(node), highlightedNodes: []});
-  }
+  };
 
   render() {
 
@@ -80,8 +80,6 @@ class App extends React.Component {
     const { nodes, highlightedNodes } = this.state;
     const pathNodes = this.getLineage(nodes[0], true).slice(0, -1)
                           .concat(highlightedNodes);
-    const updateFocusNode = this.updateFocusNode.bind(this);
-    const updateCenterNode = this.updateCenterNode.bind(this);
 
     return (
       <div style={{position: 'relative'}}>
@@ -91,8 +89,8 @@ class App extends React.Component {
         <div style={{position: 'absolute', left: pdWidth, top: 0}}>
           <Sunburst width={sbWidth} height={sbHeight}
             nodes={nodes} highlightedNodes={highlightedNodes}
-            updateFocusNode={updateFocusNode}
-            updateCenterNode={updateCenterNode} />
+            updateFocusNode={this.updateFocusNode}
+            updateCenterNode={this.updateCenterNode} />
         </div>
       </div>
     );
