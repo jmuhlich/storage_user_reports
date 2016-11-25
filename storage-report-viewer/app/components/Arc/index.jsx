@@ -75,9 +75,9 @@ class Arc extends React.Component {
 
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.highlighted != nextProps.highlighted;
-  }
+  /* shouldComponentUpdate(nextProps, nextState) {
+   *   return this.props.highlighted != nextProps.highlighted;
+   * }*/
 
 }
 
