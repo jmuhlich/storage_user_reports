@@ -13,5 +13,14 @@ function formatBytes(bytes) {
 
 const white = d3.hsl('white');
 
+function stringHash(s) {
+  var hash = 0
+  for (let i = 0, len = s.length; i < len; i++) {
+    hash = ((hash << 5) - hash) + s.charCodeAt(i);
+    hash |= 0;
+  }
+  return hash;
+}
 
-export { rad2deg, formatSI, formatBytes, white };
+
+export { rad2deg, formatSI, formatBytes, white, stringHash };

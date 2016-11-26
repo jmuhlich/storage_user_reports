@@ -1,6 +1,8 @@
 import React from 'react';
 import * as d3 from 'd3';
 
+import { stringHash } from '../../util';
+
 const arc = d3.svg.arc()
               .startAngle(function(d) { return d.x; })
               .endAngle(function(d) { return d.x + d.dx; })
@@ -37,7 +39,7 @@ class Arc extends React.Component {
 
   arcColor() {
     const d = this.props.node;
-    const c = d3.hsl(color((d.children ? d : d.parent).name));
+    const c = d3.hsl(color(stringHash(d.name)));
     if (this.props.highlighted) {
       c.s = 0.8;
       c.l = 0.8;
