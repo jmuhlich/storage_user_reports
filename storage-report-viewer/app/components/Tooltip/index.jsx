@@ -5,11 +5,6 @@ import BoundingBoxAware from '../BoundingBoxAware';
 import './tooltip.scss';
 
 
-/* The original D3 implementation used "d" as the callback datum parameter name.
-Even though the equivalent prop here is now called "node", we alias it to "d" in
-various places to reduce the amount of code we need to modify during the port to
-React. */
-
 class Tooltip extends BoundingBoxAware {
 
   static propTypes = {
@@ -24,17 +19,17 @@ class Tooltip extends BoundingBoxAware {
   }
 
   transform() {
-    const d = this.props.node;
+    const node = this.props.node;
 
-    var a1 = rad2deg(d.x + d.dx / 2) - 90;
-    var x = Math.sqrt(d.y + d.dy / 2);
-    if (d.depth === 0) {
+    var a1 = rad2deg(node.x + node.dx / 2) - 90;
+    var x = Math.sqrt(node.y + node.dy / 2);
+    if (node.depth === 0) {
       x = 0;
     }
     /* The starting angle of a 360-degree arc is at 90 degrees,
        putting the midpoint (and thus our tooltip) at 180. Override
        the angle to 0 for these arcs for better readability. */
-    if (Math.abs(d.dx - 2 * Math.PI) < 1e-5) {
+    if (Math.abs(node.dx - 2 * Math.PI) < 1e-5) {
       a1 = 0;
     }
     var y = -10, a2 = 0;
@@ -54,7 +49,6 @@ class Tooltip extends BoundingBoxAware {
   }
 
   shapeFill() {
-    const d = this.props.node;
     const height = this.props.height;
     return white.darker(height * 0.25);
   }
@@ -63,7 +57,6 @@ class Tooltip extends BoundingBoxAware {
 
     const { node } = this.props;
     const { bbox } = this.state;
-    const d = node;
 
     const shapeRectDims = {
       x: bbox.x - 3,
@@ -87,7 +80,7 @@ class Tooltip extends BoundingBoxAware {
         </g>
         <text className="tooltip-label"
               ref={ text => { this.boundingBoxTarget=text } }>
-          { d.name + ' - ' + this.formatNodeSize() }
+          { node.name + ' - ' + this.formatNodeSize() }
         </text>
       </g>
     );

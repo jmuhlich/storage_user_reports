@@ -23,10 +23,10 @@ class Arcs extends React.Component {
       this.props;
 
     const arcList = nodes.map(
-      (d, i) =>
-        d.dx > .01 ?
-              <Arc key={i} node={d} baseDepth={nodes[0].depth}
-                highlighted={highlightedNodes.includes(d)}
+      (node, i) =>
+        node.dx > .01 ?
+              <Arc key={i} node={node} baseDepth={nodes[0].depth}
+                highlighted={highlightedNodes.includes(node)}
                 updateFocusNode={updateFocusNode}
                 updateCenterNode={updateCenterNode} />
             : null

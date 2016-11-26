@@ -4,22 +4,20 @@ import * as d3 from 'd3';
 import { stringHash } from '../../util';
 
 const arc = d3.svg.arc()
-              .startAngle(function(d) { return d.x; })
-              .endAngle(function(d) { return d.x + d.dx; })
-              .innerRadius(function(d) { return Math.sqrt(d.y) })
-              .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
+              .startAngle(node => node.x)
+              .endAngle(node => node.x + node.dx)
+              .innerRadius(node => Math.sqrt(node.y))
+              .outerRadius(node => Math.sqrt(node.y + node.dy));
 
 const color = d3.scale.category20();
-color.range(color.range().map(function(oc) {
-  var c = d3.hsl(oc);
-  c.l = Math.max(c.l, 0.5);
-  return c.darker(1);
-}));
+color.range(color.range().map(
+  oc => {
+    const c = d3.hsl(oc);
+    c.l = Math.max(c.l, 0.5);
+    return c.darker();
+  }
+));
 
-/* The original D3 implementation used "d" as the callback datum parameter
-name. Even though the equivalent prop here is now called "node", we alias it to
-"d" in various places to reduce the amount of code we need to modify during the
-port to React. */
 
 class Arc extends React.Component {
 
@@ -38,8 +36,8 @@ class Arc extends React.Component {
   }
 
   arcColor() {
-    const d = this.props.node;
-    const c = d3.hsl(color(stringHash(d.name)));
+    const node = this.props.node;
+    const c = d3.hsl(color(stringHash(node.name)));
     if (this.props.highlighted) {
       c.s = 0.8;
       c.l = 0.8;
@@ -60,15 +58,14 @@ class Arc extends React.Component {
   render() {
 
     const { node, baseDepth, highlighted } = this.props;
-    const d = node;
 
     return (
       <path
-          d={ arc(d) }
+          d={ arc(node) }
           style={{
             fill: this.arcColor(),
             stroke: highlighted ? "#333" : "#eee",
-            strokeWidth: 3 / (d.depth - baseDepth)
+            strokeWidth: 3 / (node.depth - baseDepth)
           }}
           onMouseOver={ this.handleMouseOver }
           onClick={ this.handleClick }
