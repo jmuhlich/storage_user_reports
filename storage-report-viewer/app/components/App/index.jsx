@@ -61,7 +61,8 @@ class App extends React.Component {
 
   updateFocusNode = (node) => {
     this.setState({
-      highlightedNodes: node === undefined ? [] : this.getLineage(node)
+      highlightedNodes: node === undefined ?
+                        [this.state.nodes[0]] : this.getLineage(node)
     });
   };
 
@@ -71,7 +72,10 @@ class App extends React.Component {
     } else if (node === this.state.nodes[0] && node.parent !== undefined) {
       node = node.parent;
     }
-    this.setState({nodes: this.partition.nodes(node), highlightedNodes: []});
+    this.setState({
+      nodes: this.partition.nodes(node),
+      highlightedNodes: [node]
+    });
   };
 
   render() {
