@@ -19,10 +19,6 @@ class Sunburst extends React.Component {
 
   constructor(props) {
     super(props);
-
-    const { width, height } = props;
-
-    this.centeringTransform = `translate(${width / 2} ${height / 2})`;
   }
 
   handleClick = (e) => {
@@ -39,10 +35,12 @@ class Sunburst extends React.Component {
             updateFocusNode, updateCenterNode } =
       this.props;
 
+    const centeringTransform = `translate(${width / 2} ${height / 2})`;
+
     return (
       <svg width={width} height={height}
         onClick={this.handleClick} onMouseOver={this.handleMouseOver}>
-        <g transform={this.centeringTransform}>
+        <g transform={centeringTransform}>
           <Arcs nodes={nodes} highlightedNodes={highlightedNodes}
             updateFocusNode={updateFocusNode}
             updateCenterNode={updateCenterNode} />
