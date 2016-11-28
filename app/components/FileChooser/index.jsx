@@ -2,7 +2,7 @@ import React from 'react';
 
 import { formatBytes } from '../../util';
 
-class FileChooser extends React.Component {
+class FileChooser extends React.PureComponent {
 
   static propTypes = {
     updateData: React.PropTypes.func
