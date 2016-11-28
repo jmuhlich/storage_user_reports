@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 
 import FileChooser from '../FileChooser';
 import PathDetails from '../PathDetails';
+import Instructions from '../Instructions';
 import Sunburst from '../Sunburst';
 
 
@@ -94,14 +95,20 @@ class App extends React.Component {
     const fileChooserStyle = {
       marginBottom: 10, paddingBottom: 10, borderBottom: '1px solid gray'
     };
+    const instructionsStyle = {
+      position: 'absolute', bottom: 0
+    };
 
     return (
-      <div style={{position: 'relative'}}>
+      <div style={{position: 'relative', height: sbHeight}}>
         <div style={{width: pdWidth}}>
           <div style={fileChooserStyle}>
             <FileChooser updateData={this.updateData} />
           </div>
           <PathDetails nodes={pathNodes} />
+          <div style={instructionsStyle}>
+            <Instructions />
+          </div>
         </div>
         <div style={{position: 'absolute', left: pdWidth, top: 0}}>
           <Sunburst width={sbWidth} height={sbHeight}

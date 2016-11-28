@@ -65,11 +65,8 @@ class FileChooser extends React.PureComponent {
   render() {
 
     return (
-      <div>
-        <p>Upload a user storage report to visualize it:</p>
-        <input type="file" onChange={this.handleChange}
-          ref={ input => { this.inputNode = input } }/>
-      </div>
+      <input type="file" onChange={this.handleChange}
+             ref={ input => { this.inputNode = input } }/>
     );
 
   }
