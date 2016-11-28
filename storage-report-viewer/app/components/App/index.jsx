@@ -1,6 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3';
 
+import FileChooser from '../FileChooser';
 import PathDetails from '../PathDetails';
 import Sunburst from '../Sunburst';
 
@@ -17,7 +18,6 @@ function descendants(node) {
 class App extends React.Component {
 
   static propTypes = {
-    data: React.PropTypes.object.isRequired,
     sbWidth: React.PropTypes.number,
     sbHeight: React.PropTypes.number,
     pdWidth: React.PropTypes.number,
@@ -32,7 +32,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    const { sbWidth, sbHeight, data } = props;
+    const { sbWidth, sbHeight } = props;
 
     const sbRadius = Math.min(sbWidth, sbHeight) / 2.2;
     this.partition = d3.layout.partition()
@@ -40,29 +40,35 @@ class App extends React.Component {
                        .size([2 * Math.PI, sbRadius * sbRadius])
                        .value(node => node.size);
 
-    const nodes = this.partition.nodes(data);
-    this.master_node = nodes[0];
-    this.state = {
-      nodes: nodes,
-      highlightedNodes: []
-    };
+    this.state = { nodes: [], highlightedNodes: [] };
   }
 
   getLineage(node, full=false) {
-    var nodes = [node];
-    while (node.parent !== undefined &&
-           (node !== this.state.nodes[0] || full)) {
-      nodes.push(node.parent);
-      node = node.parent;
+    var nodes;
+    if (node === undefined || this.state.nodes.length === 0) {
+      nodes = [];
+    } else {
+      nodes = [node];
+      while (node.parent !== undefined &&
+             (node !== this.state.nodes[0] || full)) {
+        nodes.push(node.parent);
+        node = node.parent;
+      }
+      nodes.reverse();
     }
-    nodes.reverse();
     return nodes;
+  }
+
+  updateData = (data) => {
+    const nodes = this.partition.nodes(data);
+    this.master_node = nodes[0];
+    this.setState({ nodes: nodes });
   }
 
   updateFocusNode = (node) => {
     this.setState({
       highlightedNodes: node === undefined ?
-                        [this.state.nodes[0]] : this.getLineage(node)
+                        this.state.nodes.slice(0,1) : this.getLineage(node)
     });
   };
 
@@ -85,9 +91,16 @@ class App extends React.Component {
     const pathNodes = this.getLineage(nodes[0], true).slice(0, -1)
                           .concat(highlightedNodes);
 
+    const fileChooserStyle = {
+      marginBottom: 10, paddingBottom: 10, borderBottom: '1px solid gray'
+    };
+
     return (
       <div style={{position: 'relative'}}>
         <div style={{width: pdWidth}}>
+          <div style={fileChooserStyle}>
+            <FileChooser updateData={this.updateData} />
+          </div>
           <PathDetails nodes={pathNodes} />
         </div>
         <div style={{position: 'absolute', left: pdWidth, top: 0}}>

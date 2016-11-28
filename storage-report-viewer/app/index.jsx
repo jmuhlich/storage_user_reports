@@ -5,8 +5,6 @@ import App from './components/App';
 
 import './assets/base.scss';
 
-import data from './assets/reports/lz96.json';
-
 // add in performance tooling in dev
 if (process.env.NODE_ENV !== 'production') {
   window.Perf = require('react-addons-perf');
@@ -14,7 +12,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 ReactDOM.render(
   (
-    <App data={data} />
+    <App />
   ),
   document.getElementById('storage-report-viewer')
 );
