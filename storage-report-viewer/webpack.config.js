@@ -14,7 +14,7 @@ module.exports = [
         filename: 'index.html'
       })
     ],
-    devtool: 'eval-cheap-module-source-map',
+    devtool: 'eval-source-map',
     entry: {
       'bundle': [
         'babel-polyfill',
