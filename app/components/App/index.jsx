@@ -2,6 +2,7 @@ import React from 'react';
 import * as d3 from 'd3';
 
 import FileChooser from '../FileChooser';
+import BasePath from '../BasePath';
 import PathDetails from '../PathDetails';
 import Instructions from '../Instructions';
 import Sunburst from '../Sunburst';
@@ -87,8 +88,9 @@ class App extends React.Component {
 
     const { sbWidth, sbHeight, pdWidth, insExtraWidth } = this.props;
     const { nodes, highlightedNodes } = this.state;
-    const pathNodes = this.getLineage(nodes[0], true).slice(0, -1)
-                          .concat(highlightedNodes);
+
+    const basePathNodes = this.getLineage(nodes[0], true);
+    const fullPathNodes = basePathNodes.concat(highlightedNodes.slice(1));
 
     const fileChooserStyle = {
       marginBottom: 10, paddingBottom: 10, borderBottom: '1px solid gray'
@@ -103,7 +105,8 @@ class App extends React.Component {
           <div style={fileChooserStyle}>
             <FileChooser updateData={this.updateData} />
           </div>
-          <PathDetails nodes={pathNodes} />
+          <BasePath nodes={basePathNodes} />
+          <PathDetails nodes={fullPathNodes} />
           <div style={instructionsStyle}>
             <Instructions />
           </div>

@@ -26,7 +26,7 @@ class FileChooser extends React.PureComponent {
       const numRows = rows[rows.length - 1].length > 0 ?
                       rows.length : rows.length - 1;
       const root = {
-        name: file.name,
+        name: '<all files>',
         depth: 0,
         children: []
       };
