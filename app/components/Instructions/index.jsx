@@ -32,6 +32,10 @@ class Instructions extends React.Component {
             Click in the white space just outside the arcs to return to the
             top level.
           </li>
+          <li>
+            Note that folders whose arcs would be too narrow to see are hidden,
+            but their parent folders still include them in their total size.
+          </li>
         </ul>
       </div>
     );

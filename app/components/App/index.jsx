@@ -19,15 +19,13 @@ function descendants(node) {
 class App extends React.Component {
 
   static propTypes = {
-    sbWidth: React.PropTypes.number,
-    sbHeight: React.PropTypes.number,
-    pdWidth: React.PropTypes.number,
   };
 
   static defaultProps = {
     sbWidth: 700,
     sbHeight: 700,
     pdWidth: 500,
+    insExtraWidth: 100
   };
 
   constructor(props) {
@@ -87,7 +85,7 @@ class App extends React.Component {
 
   render() {
 
-    const { sbWidth, sbHeight, pdWidth } = this.props;
+    const { sbWidth, sbHeight, pdWidth, insExtraWidth } = this.props;
     const { nodes, highlightedNodes } = this.state;
     const pathNodes = this.getLineage(nodes[0], true).slice(0, -1)
                           .concat(highlightedNodes);
@@ -96,7 +94,7 @@ class App extends React.Component {
       marginBottom: 10, paddingBottom: 10, borderBottom: '1px solid gray'
     };
     const instructionsStyle = {
-      position: 'absolute', bottom: 0
+      position: 'absolute', bottom: 0, width: pdWidth + insExtraWidth
     };
 
     return (
