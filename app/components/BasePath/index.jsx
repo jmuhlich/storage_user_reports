@@ -1,9 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class BasePath extends React.Component {
 
   static propTypes = {
-    nodes: React.PropTypes.array.isRequired
+    nodes: PropTypes.array.isRequired
   };
 
   static defaultProps = {

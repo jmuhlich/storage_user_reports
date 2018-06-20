@@ -1,6 +1,7 @@
 // webpack.config.js
 var webpack = require('webpack');
 var fs = require('fs');
+var path = require('path');
 var HtmlPlugin = require('html-webpack-plugin');
 
 module.exports = [
@@ -10,7 +11,7 @@ module.exports = [
       // Note: the HtmlPlugin automatically adds the needed css and js
       // to the html file
       new HtmlPlugin({
-        template: './app/index.html',
+        template: path.resolve(__dirname, './app/index.html'),
         filename: 'index.html'
       })
     ],
@@ -18,15 +19,15 @@ module.exports = [
     entry: {
       'bundle': [
         'babel-polyfill',
-        './app/index.jsx'
+        path.resolve(__dirname, './app/index.jsx')
       ]
     },
     output: {
-      path: './dist',
+      path: path.resolve(__dirname, './dist'),
       filename: '[name].js'
     },
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.jsx$/,
           exclude: /node_modules/,
@@ -66,7 +67,7 @@ module.exports = [
       ]
     },
     resolve: {
-      extensions: ['', '.js', '.jsx', '.json']
+      extensions: ['.js', '.jsx', '.json']
     }
   }
 ];

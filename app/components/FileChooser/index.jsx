@@ -1,11 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { formatBytes } from '../../util';
 
 class FileChooser extends React.PureComponent {
 
   static propTypes = {
-    updateData: React.PropTypes.func
+    updateData: PropTypes.func
   };
 
   static defaultProps = {};
@@ -22,6 +23,8 @@ class FileChooser extends React.PureComponent {
       const content = e.target.result;
       const rows = content.split(/\r\n|\n/);
       const headers = rows[0];
+      // FIXME Enum for format.
+      const format = headers.match(/^SizeH/) ? 1 : 2;
       // Skip last row if empty (due to final newline).
       const numRows = rows[rows.length - 1].length > 0 ?
                       rows.length : rows.length - 1;
@@ -34,7 +37,9 @@ class FileChooser extends React.PureComponent {
       for (let i = 1; i < numRows; i++) {
         const fields = rows[i].split(/, /);
         const bytes = parseInt(fields[fields.length - 1]);
-        const path = fields.slice(1, -1).join(',');
+        // FIXME CSV parsing hack for format 2.
+        const path = format == 1 ? fields.slice(1, -1).join(',') :
+                     fields.slice(0, -1).join(',').replace(/(^"|"$)/, '');
         const names = path.split(/\//);
         const node = {
           size: bytes,

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Arcs from '../Arcs';
 import Tooltips from '../Tooltips';
@@ -6,12 +7,12 @@ import Tooltips from '../Tooltips';
 class Sunburst extends React.Component {
 
   static propTypes = {
-    width: React.PropTypes.number.isRequired,
-    height: React.PropTypes.number.isRequired,
-    nodes: React.PropTypes.array.isRequired,
-    highlightedNodes: React.PropTypes.array.isRequired,
-    updateFocusNode: React.PropTypes.func.isRequired,
-    updateCenterNode: React.PropTypes.func.isRequired
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    nodes: PropTypes.array.isRequired,
+    highlightedNodes: PropTypes.array.isRequired,
+    updateFocusNode: PropTypes.func.isRequired,
+    updateCenterNode: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -22,11 +23,11 @@ class Sunburst extends React.Component {
   }
 
   handleClick = (e) => {
-    this.props.updateCenterNode(undefined);
+    this.props.updateCenterNode(null);
   }
 
   handleMouseOver = (e) => {
-    this.props.updateFocusNode(undefined);
+    this.props.updateFocusNode(null);
   }
 
   render() {

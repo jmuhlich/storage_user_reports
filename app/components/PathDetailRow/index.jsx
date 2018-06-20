@@ -1,12 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { formatBytes } from '../../util';
 
 class PathDetailRow extends React.PureComponent {
 
   static propTypes = {
-    node: React.PropTypes.object.isRequired,
-    depth: React.PropTypes.number.isRequired,
+    node: PropTypes.object.isRequired,
+    depth: PropTypes.number.isRequired,
   };
 
   static defaultProps = {};

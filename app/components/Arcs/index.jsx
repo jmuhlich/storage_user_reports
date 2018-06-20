@@ -1,14 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Arc from '../Arc';
 
 class Arcs extends React.Component {
 
   static propTypes = {
-    nodes: React.PropTypes.array,
-    highlightedNodes: React.PropTypes.array,
-    updateFocusNode: React.PropTypes.func,
-    updateCenterNode: React.PropTypes.func
+    nodes: PropTypes.array,
+    highlightedNodes: PropTypes.array,
+    updateFocusNode: PropTypes.func,
+    updateCenterNode: PropTypes.func
   };
 
   static defaultProps = {};
@@ -24,7 +25,7 @@ class Arcs extends React.Component {
 
     const arcList = nodes.map(
       (node, i) =>
-        node.dx > .01 ?
+        (node.x1 - node.x0) > .01 ?
               <Arc key={i} node={node} baseDepth={nodes[0].depth}
                 highlighted={highlightedNodes.includes(node)}
                 updateFocusNode={updateFocusNode}

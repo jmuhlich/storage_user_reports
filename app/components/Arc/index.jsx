@@ -1,15 +1,16 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
 import { stringHash } from '../../util';
 
-const arc = d3.svg.arc()
-              .startAngle(node => node.x)
-              .endAngle(node => node.x + node.dx)
-              .innerRadius(node => Math.sqrt(node.y))
-              .outerRadius(node => Math.sqrt(node.y + node.dy));
+const arc = d3.arc()
+              .startAngle(node => node.x0)
+              .endAngle(node => node.x1)
+              .innerRadius(node => Math.sqrt(node.y0))
+              .outerRadius(node => Math.sqrt(node.y1));
 
-const color = d3.scale.category20();
+const color = d3.scaleOrdinal('schemeCategory20');
 color.range(color.range().map(
   oc => {
     const c = d3.hsl(oc);
@@ -22,11 +23,11 @@ color.range(color.range().map(
 class Arc extends React.Component {
 
   static propTypes = {
-    node: React.PropTypes.object,
-    baseDepth: React.PropTypes.number,
-    highlighted: React.PropTypes.bool,
-    updateFocusNode: React.PropTypes.func,
-    updateCenterNode: React.PropTypes.func
+    node: PropTypes.object,
+    baseDepth: PropTypes.number,
+    highlighted: PropTypes.bool,
+    updateFocusNode: PropTypes.func,
+    updateCenterNode: PropTypes.func
   };
 
   static defaultProps = {};
@@ -37,7 +38,7 @@ class Arc extends React.Component {
 
   arcColor() {
     const node = this.props.node;
-    const c = d3.hsl(color(stringHash(node.name)));
+    const c = d3.hsl(color(stringHash(node.data.name)));
     if (this.props.highlighted) {
       c.s = 0.8;
       c.l = 0.8;

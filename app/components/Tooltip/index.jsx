@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { rad2deg, formatBytes, white } from '../../util';
 import BoundingBoxAware from '../BoundingBoxAware';
@@ -8,8 +9,8 @@ import './tooltip.scss';
 class Tooltip extends BoundingBoxAware {
 
   static propTypes = {
-    node: React.PropTypes.object,
-    height: React.PropTypes.number
+    node: PropTypes.object,
+    height: PropTypes.number
   };
 
   static defaultProps = {};
@@ -21,15 +22,15 @@ class Tooltip extends BoundingBoxAware {
   transform() {
     const node = this.props.node;
 
-    var a1 = rad2deg(node.x + node.dx / 2) - 90;
-    var x = Math.sqrt(node.y + node.dy / 2);
+    var a1 = rad2deg((node.x0 + node.x1) / 2) - 90;
+    var x = Math.sqrt((node.y0 + node.y1) / 2);
     if (node.depth === 0) {
       x = 0;
     }
     /* The starting angle of a 360-degree arc is at 90 degrees,
        putting the midpoint (and thus our tooltip) at 180. Override
        the angle to 0 for these arcs for better readability. */
-    if (Math.abs(node.dx - 2 * Math.PI) < 1e-5) {
+    if (Math.abs((node.x1 - node.x0) - 2 * Math.PI) < 1e-5) {
       a1 = 0;
     }
     var y = -10, a2 = 0;

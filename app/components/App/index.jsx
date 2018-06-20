@@ -35,21 +35,19 @@ class App extends React.Component {
     const { sbWidth, sbHeight } = props;
 
     const sbRadius = Math.min(sbWidth, sbHeight) / 2.2;
-    this.partition = d3.layout.partition()
-                       .sort(null)
+    this.partition = d3.partition()
                        .size([2 * Math.PI, sbRadius * sbRadius])
-                       .value(node => node.size);
 
     this.state = { nodes: [], highlightedNodes: [] };
   }
 
   getLineage(node, full=false) {
     var nodes;
-    if (node === undefined || this.state.nodes.length === 0) {
+    if (node === null || this.state.nodes.length === 0) {
       nodes = [];
     } else {
       nodes = [node];
-      while (node.parent !== undefined &&
+      while (node.parent !== null &&
              (node !== this.state.nodes[0] || full)) {
         nodes.push(node.parent);
         node = node.parent;
@@ -60,26 +58,27 @@ class App extends React.Component {
   }
 
   updateData = (data) => {
-    const nodes = this.partition.nodes(data);
+    const nodes = this.partition(d3.hierarchy(data)).sum(node => node.size).descendants();
+    console.log(nodes)
     this.master_node = nodes[0];
     this.setState({ nodes: nodes });
   }
 
   updateFocusNode = (node) => {
     this.setState({
-      highlightedNodes: node === undefined ?
+      highlightedNodes: node === null ?
                         this.state.nodes.slice(0,1) : this.getLineage(node)
     });
   };
 
   updateCenterNode = (node) => {
-    if (node === undefined) {
+    if (node === null) {
       node = this.master_node;
-    } else if (node === this.state.nodes[0] && node.parent !== undefined) {
+    } else if (node === this.state.nodes[0] && node.parent !== null) {
       node = node.parent;
     }
     this.setState({
-      nodes: this.partition.nodes(node),
+      nodes: this.partition(d3.hierarchy(node)).sum(node => node.size).descendants(),
       highlightedNodes: [node]
     });
   };

@@ -1,11 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Tooltip from '../Tooltip';
 
 class Tooltips extends React.PureComponent {
 
   static propTypes = {
-    nodes: React.PropTypes.array,
+    nodes: PropTypes.array,
   };
 
   static defaultProps = {};
