@@ -28,7 +28,7 @@ class PathDetailRow extends React.PureComponent {
     return (
       <tr>
         <td>{ depth }</td>
-        <td style={nameStyle}>{ node.name }</td>
+        <td style={nameStyle}>{ node.data.name }</td>
         <td>{ formatBytes(node.value) }</td>
       </tr>
     );

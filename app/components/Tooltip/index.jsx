@@ -81,7 +81,7 @@ class Tooltip extends BoundingBoxAware {
         </g>
         <text className="tooltip-label"
               ref={ text => { this.boundingBoxTarget=text } }>
-          { node.name + ' - ' + this.formatNodeSize() }
+          { node.data.name + ' - ' + this.formatNodeSize() }
         </text>
       </g>
     );

@@ -9,7 +9,6 @@ class Sunburst extends React.Component {
   static propTypes = {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
-    nodes: PropTypes.array.isRequired,
     highlightedNodes: PropTypes.array.isRequired,
     updateFocusNode: PropTypes.func.isRequired,
     updateCenterNode: PropTypes.func.isRequired
@@ -32,7 +31,7 @@ class Sunburst extends React.Component {
 
   render() {
 
-    const { width, height, nodes, highlightedNodes,
+    const { width, height, root, highlightedNodes,
             updateFocusNode, updateCenterNode } =
       this.props;
 
@@ -42,7 +41,7 @@ class Sunburst extends React.Component {
       <svg width={width} height={height}
         onClick={this.handleClick} onMouseOver={this.handleMouseOver}>
         <g transform={centeringTransform}>
-          <Arcs nodes={nodes} highlightedNodes={highlightedNodes}
+          <Arcs root={root} highlightedNodes={highlightedNodes}
             updateFocusNode={updateFocusNode}
             updateCenterNode={updateCenterNode} />
           <Tooltips nodes={highlightedNodes} />

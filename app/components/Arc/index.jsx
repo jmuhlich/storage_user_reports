@@ -10,12 +10,13 @@ const arc = d3.arc()
               .innerRadius(node => Math.sqrt(node.y0))
               .outerRadius(node => Math.sqrt(node.y1));
 
-const color = d3.scaleOrdinal('schemeCategory20');
+const color = d3.scaleOrdinal(d3.schemeCategory10);
 color.range(color.range().map(
   oc => {
     const c = d3.hsl(oc);
-    c.l = Math.max(c.l, 0.5);
-    return c.darker();
+    c.s = Math.min(c.s, 0.5);
+    c.l = Math.min(c.l, 0.5);
+    return c;
   }
 ));
 
@@ -38,7 +39,7 @@ class Arc extends React.Component {
 
   arcColor() {
     const node = this.props.node;
-    const c = d3.hsl(color(stringHash(node.data.name)));
+    const c = d3.hsl(color(stringHash(node.data.path)));
     if (this.props.highlighted) {
       c.s = 0.8;
       c.l = 0.8;
@@ -66,7 +67,7 @@ class Arc extends React.Component {
           style={{
             fill: this.arcColor(),
             stroke: highlighted ? "#333" : "#eee",
-            strokeWidth: 3 / (node.depth - baseDepth)
+            strokeWidth: 3 / (node.depth - baseDepth + 1)
           }}
           onMouseOver={ this.handleMouseOver }
           onClick={ this.handleClick }

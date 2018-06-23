@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 class BasePath extends React.Component {
 
   static propTypes = {
-    nodes: PropTypes.array.isRequired
+    node: PropTypes.object.isRequired
   };
 
   static defaultProps = {
@@ -15,8 +15,8 @@ class BasePath extends React.Component {
   }
 
   render() {
-    const { nodes } = this.props;
-    const path = nodes.slice(1).map(node => node.name).join('/');
+    const { node } = this.props;
+    const path = node.data.path;
 
     const style = {
       font: '16px monospace',

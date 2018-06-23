@@ -38,17 +38,17 @@ class App extends React.Component {
     this.partition = d3.partition()
                        .size([2 * Math.PI, sbRadius * sbRadius])
 
-    this.state = { nodes: [], highlightedNodes: [] };
+    this.state = { root: null, center: null, highlightedNodes: [] };
   }
 
   getLineage(node, full=false) {
     var nodes;
-    if (node === null || this.state.nodes.length === 0) {
+    if (node === null) {
       nodes = [];
     } else {
       nodes = [node];
       while (node.parent !== null &&
-             (node !== this.state.nodes[0] || full)) {
+             (node !== this.state.center || full)) {
         nodes.push(node.parent);
         node = node.parent;
       }
@@ -58,37 +58,35 @@ class App extends React.Component {
   }
 
   updateData = (data) => {
-    const nodes = this.partition(d3.hierarchy(data)).sum(node => node.size).descendants();
-    console.log(nodes)
-    this.master_node = nodes[0];
-    this.setState({ nodes: nodes });
+    const root = this.partition(data);
+    this.setState({ root: root, center: root });
   }
 
   updateFocusNode = (node) => {
     this.setState({
       highlightedNodes: node === null ?
-                        this.state.nodes.slice(0,1) : this.getLineage(node)
+                        [this.state.root] : this.getLineage(node)
     });
   };
 
   updateCenterNode = (node) => {
     if (node === null) {
-      node = this.master_node;
-    } else if (node === this.state.nodes[0] && node.parent !== null) {
+      node = this.state.root;
+    } else if (node === this.state.center && node.parent !== null) {
       node = node.parent;
     }
-    this.setState({
-      nodes: this.partition(d3.hierarchy(node)).sum(node => node.size).descendants(),
-      highlightedNodes: [node]
-    });
+    // FIXME The height attributes in the children don't change here so
+    // the arc radii are wrong. Need to rebuild the subtree or something.
+    node = this.partition(node);
+    this.setState({ center: node, highlightedNodes: [node] });
   };
 
   render() {
 
     const { sbWidth, sbHeight, pdWidth, insExtraWidth } = this.props;
-    const { nodes, highlightedNodes } = this.state;
+    const { root, center, highlightedNodes } = this.state;
 
-    const basePathNodes = this.getLineage(nodes[0], true);
+    const basePathNodes = this.getLineage(center, true);
     const fullPathNodes = basePathNodes.concat(highlightedNodes.slice(1));
 
     const fileChooserStyle = {
@@ -104,17 +102,19 @@ class App extends React.Component {
           <div style={fileChooserStyle}>
             <FileChooser updateData={this.updateData} />
           </div>
-          <BasePath nodes={basePathNodes} />
+          { center !== null && <BasePath node={center} /> }
           <PathDetails nodes={fullPathNodes} />
           <div style={instructionsStyle}>
             <Instructions />
           </div>
         </div>
         <div style={{position: 'absolute', left: pdWidth, top: 0}}>
-          <Sunburst width={sbWidth} height={sbHeight}
-            nodes={nodes} highlightedNodes={highlightedNodes}
-            updateFocusNode={this.updateFocusNode}
-            updateCenterNode={this.updateCenterNode} />
+          { center !== null &&
+              <Sunburst width={sbWidth} height={sbHeight}
+                root={center} highlightedNodes={highlightedNodes}
+                updateFocusNode={this.updateFocusNode}
+                updateCenterNode={this.updateCenterNode} />
+          }
         </div>
       </div>
     );

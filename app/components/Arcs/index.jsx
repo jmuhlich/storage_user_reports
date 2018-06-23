@@ -6,7 +6,7 @@ import Arc from '../Arc';
 class Arcs extends React.Component {
 
   static propTypes = {
-    nodes: PropTypes.array,
+    root: PropTypes.object,
     highlightedNodes: PropTypes.array,
     updateFocusNode: PropTypes.func,
     updateCenterNode: PropTypes.func
@@ -20,13 +20,13 @@ class Arcs extends React.Component {
 
   render() {
 
-    const { nodes, highlightedNodes, updateFocusNode, updateCenterNode } =
+    const { root, highlightedNodes, updateFocusNode, updateCenterNode } =
       this.props;
 
-    const arcList = nodes.map(
+    const arcList = root.descendants().map(
       (node, i) =>
         (node.x1 - node.x0) > .01 ?
-              <Arc key={i} node={node} baseDepth={nodes[0].depth}
+              <Arc key={i} node={node} baseDepth={root.depth}
                 highlighted={highlightedNodes.includes(node)}
                 updateFocusNode={updateFocusNode}
                 updateCenterNode={updateCenterNode} />
