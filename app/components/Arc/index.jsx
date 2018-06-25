@@ -25,7 +25,6 @@ class Arc extends React.Component {
 
   static propTypes = {
     node: PropTypes.object,
-    baseDepth: PropTypes.number,
     highlighted: PropTypes.bool,
     updateFocusNode: PropTypes.func,
     updateCenterNode: PropTypes.func
@@ -59,7 +58,7 @@ class Arc extends React.Component {
 
   render() {
 
-    const { node, baseDepth, highlighted } = this.props;
+    const { node, highlighted } = this.props;
 
     return (
       <path
@@ -67,7 +66,7 @@ class Arc extends React.Component {
           style={{
             fill: this.arcColor(),
             stroke: highlighted ? "#333" : "#eee",
-            strokeWidth: 3 / (node.depth - baseDepth + 1)
+            strokeWidth: 3 / (node.depth + 1)
           }}
           onMouseOver={ this.handleMouseOver }
           onClick={ this.handleClick }

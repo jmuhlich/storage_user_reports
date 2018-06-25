@@ -38,55 +38,65 @@ class App extends React.Component {
     this.partition = d3.partition()
                        .size([2 * Math.PI, sbRadius * sbRadius])
 
-    this.state = { root: null, center: null, highlightedNodes: [] };
-  }
-
-  getLineage(node, full=false) {
-    var nodes;
-    if (node === null) {
-      nodes = [];
-    } else {
-      nodes = [node];
-      while (node.parent !== null &&
-             (node !== this.state.center || full)) {
-        nodes.push(node.parent);
-        node = node.parent;
-      }
-      nodes.reverse();
-    }
-    return nodes;
+    this.state = {
+      root: null,
+      renderRoot: null,
+      highlightedNodes: []
+    };
   }
 
   updateData = (data) => {
-    const root = this.partition(data);
-    this.setState({ root: root, center: root });
+    const root = data;
+    const renderRoot = this.partition(data.copy());
+    this.setState({ root: root, renderRoot: renderRoot });
   }
 
   updateFocusNode = (node) => {
     this.setState({
       highlightedNodes: node === null ?
-                        [this.state.root] : this.getLineage(node)
+                        [this.state.renderRoot] : node.ancestors().reverse()
     });
   };
 
-  updateCenterNode = (node) => {
-    if (node === null) {
-      node = this.state.root;
-    } else if (node === this.state.center && node.parent !== null) {
-      node = node.parent;
+  updateCenterNode = (center) => {
+    if (center === null) {
+      center = this.state.root;
+    } else if (center === this.state.renderRoot) {
+      const trueCenter = this.findCenter();
+      if (trueCenter.parent !== null) {
+        center = trueCenter.parent;
+      }
     }
-    // FIXME The height attributes in the children don't change here so
-    // the arc radii are wrong. Need to rebuild the subtree or something.
-    node = this.partition(node);
-    this.setState({ center: node, highlightedNodes: [node] });
+    const renderRoot = this.partition(center.copy());
+    this.setState({ renderRoot: renderRoot, highlightedNodes: [renderRoot] });
   };
+
+  findCenter() {
+    if (this.state.renderRoot === null) {
+      return null;
+    }
+    return this.findNodeByPath(this.state.renderRoot.data.path);
+  }
+
+  findNodeByPath(path, node=this.state.root) {
+    if (node.data.path === path) {
+      return node;
+    }
+    for (let child of node.children) {
+      if (path.startsWith(child.data.path)) {
+        return this.findNodeByPath(path, child);
+      }
+    }
+    return null;
+  }
 
   render() {
 
     const { sbWidth, sbHeight, pdWidth, insExtraWidth } = this.props;
-    const { root, center, highlightedNodes } = this.state;
+    const { root, renderRoot, highlightedNodes } = this.state;
 
-    const basePathNodes = this.getLineage(center, true);
+    const center = this.findCenter();
+    const basePathNodes = center !== null ? center.ancestors().reverse() : [];
     const fullPathNodes = basePathNodes.concat(highlightedNodes.slice(1));
 
     const fileChooserStyle = {
@@ -109,9 +119,9 @@ class App extends React.Component {
           </div>
         </div>
         <div style={{position: 'absolute', left: pdWidth, top: 0}}>
-          { center !== null &&
+          { renderRoot !== null &&
               <Sunburst width={sbWidth} height={sbHeight}
-                root={center} highlightedNodes={highlightedNodes}
+                root={renderRoot} highlightedNodes={highlightedNodes}
                 updateFocusNode={this.updateFocusNode}
                 updateCenterNode={this.updateCenterNode} />
           }

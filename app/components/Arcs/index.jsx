@@ -26,7 +26,7 @@ class Arcs extends React.Component {
     const arcList = root.descendants().map(
       (node, i) =>
         (node.x1 - node.x0) > .01 ?
-              <Arc key={i} node={node} baseDepth={root.depth}
+              <Arc key={i} node={node}
                 highlighted={highlightedNodes.includes(node)}
                 updateFocusNode={updateFocusNode}
                 updateCenterNode={updateCenterNode} />
