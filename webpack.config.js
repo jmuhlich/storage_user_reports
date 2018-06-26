@@ -4,9 +4,10 @@ var fs = require('fs');
 var path = require('path');
 var HtmlPlugin = require('html-webpack-plugin');
 
-module.exports = [
-  // Client build
-  {
+module.exports = (env, argv) => {
+  const production = argv.mode === 'production';
+  const development = argv.mode === 'development';
+  return {
     plugins: [
       // Note: the HtmlPlugin automatically adds the needed css and js
       // to the html file
@@ -15,7 +16,7 @@ module.exports = [
         filename: 'index.html'
       })
     ],
-    devtool: 'eval-source-map',
+    devtool: development ? 'eval-source-map' : false,
     entry: {
       'bundle': [
         'babel-polyfill',
@@ -24,7 +25,7 @@ module.exports = [
     },
     output: {
       path: path.resolve(__dirname, './dist'),
-      filename: '[name].js'
+      filename: `[name]${production ? '.min' : ''}.js`
     },
     module: {
       rules: [
@@ -70,4 +71,4 @@ module.exports = [
       extensions: ['.js', '.jsx', '.json']
     }
   }
-];
+};

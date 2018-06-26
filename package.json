@@ -5,8 +5,8 @@
   "description": "Storage Report Viewer",
   "main": "webpack.config.js",
   "scripts": {
-    "start": "webpack-dev-server --mode development --progress --colors --inline --content-base dist/ --hot",
-    "build": "NODE_ENV=production webpack --progress --config webpack.config.build.js",
+    "start": "webpack-dev-server --mode development --progress --inline --hot",
+    "build": "webpack --mode production --progress",
     "lint": "eslint client common; true",
     "test": "NODE_ENV=test mocha --compilers js:babel-core/register --recursive; true"
   },
