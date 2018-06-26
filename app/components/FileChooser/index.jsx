@@ -23,34 +23,37 @@ class FileChooser extends React.PureComponent {
     reader.onload = (e) => {
       const content = e.target.result;
       const rows = d3.csvParseRows(content);
-      const root = (rows[0][0] == "SizeH") ? this.parseFormat1(rows) : this.parseFormat2(rows);
+      const root = (rows[0][0] == "SizeH") ?
+                   this.parse(rows, 1, 2, true) :
+                   this.parse(rows, 0, 1, false);
       this.props.updateData(root.sort(
         (a, b) => a.data.path.localeCompare(b.data.path)
       ));
     };
   };
 
-  parseFormat1(rows) {
+  parse(rows, path_col, size_col, pre_summed) {
     const records = rows.slice(1).map(r => {
-      const path = r[1].replace(/^ /, "/").replace(/([^\/])$/, "$1/");
+      const path = r[path_col].replace(/^ /, "/").replace(/([^\/])$/, "$1/");
       return {
         path: path,
         name: path.replace(/.*\/([^\/]+)\/?/, "$1"),
-        size: +r[2]
+        size: +r[size_col]
       }
     });
     const stratify = d3.stratify()
                        .id(d => d.path)
                        .parentId(d => d.path.replace(/[^/]*\/$/, ""));
     const root = stratify(records);
-    root.each(n => { n.value = n.data.size });
-    if (root.value === 0) {
-      root.value = root.children.map(n => n.value).reduce((a, b) => a + b);
+    if (pre_summed) {
+      root.each(n => { n.value = n.data.size });
+      if (root.value === 0) {
+        root.value = root.children.map(n => n.value).reduce((a, b) => a + b);
+      }
+    } else {
+      root.sum(d => d.size);
     }
     return root;
-  }
-
-  parseFormat2(rows) {
   }
 
   render() {
